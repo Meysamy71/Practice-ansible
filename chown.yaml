@@ -1,0 +1,6 @@
+- name:
+  hosts: all
+  tasks:
+    - name: Change mod
+      ansible.builtin.shell:
+        cmd: chown -R tomcat:tomcat /opt/tomcat9/
