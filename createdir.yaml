@@ -1,0 +1,12 @@
+- name: Creating a directory
+  hosts: all
+  vars:
+    mydir: "~/test"
+  tasks:
+    - name: Creating a directory
+      ansible.builtin.file:
+        path: "{{ mydir }}"
+        state: directory
+        owner: devops
+        group: devops
+        mode: '0755'
