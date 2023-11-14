@@ -1,0 +1,27 @@
+- hosts: all
+  tasks:
+  - name: Creating a file with content
+    copy:
+      dest: "/root/conf.txt"
+      content: |
+        [Unit] 
+        Description=Tomcat 
+        After=syslog.target network.target 
+        
+        [Service] 
+        Type=forking 
+        
+        User=root
+        Group=root 
+        
+        Environment=JAVA_HOME=/home/jdk1.8.0_121 
+        Environment='JAVA_OPTS=-Djava.awt.headless=true' 
+        Environment='UMASK=0022' 
+        Environment=CATALINA_HOME=/home/tomcat9 
+        Environment=CATALINA_BASE=/home/tomcat9 
+        Environment=CATALINA_PID=/home/tomcat9/temp/tomcat.pid 
+        ExecStart=/home/tomcat9/bin/catalina.sh start 
+        ExecStop=/home/tomcat9/bin/catalina.sh stop 
+        
+        [Install] 
+        WantedBy=multi-user.target
