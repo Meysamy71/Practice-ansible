@@ -1,0 +1,49 @@
+- name: 
+  hosts: all
+  tasks:
+    - name: Copy Tomcat
+      ansible.builtin.copy:
+        src: /root/tom/tomcat9
+        dest: /opt/
+        owner: root
+        group: root
+
+    - name: Copy Tomcat Service
+      ansible.builtin.copy:
+        src: /root/tom/tomcat.service
+        dest: /etc/systemd/system
+        owner: root
+        group: root
+
+    - name: Set JAVA_HOME
+      ansible.builtin.shell:
+        cmd: echo 'export JAVA_HOME=/opt/tomcat9/jdk1.8.0_202' >> ~/.bashrc
+
+    - name: Set JAVA_JRE
+      ansible.builtin.shell:
+        cmd: echo 'export JAVA_JRE=/opt/tomcat9/jdk1.8.0_202/jre' >> ~/.bashrc
+
+    - name: reaload bash
+      ansible.builtin.shell:
+        cmd: chsh -s /bin/bash
+
+    - name: Change mod tomcat bin
+      ansible.builtin.shell:
+        cmd: chmod +x /opt/tomcat9/bin/*
+    
+    - name: Change mod java bin
+      ansible.builtin.shell:
+        cmd: chmod +x /opt/tomcat9/jdk1.8.0_202/bin/*
+
+    - name: Change mod java jre
+      ansible.builtin.shell:
+        cmd: chmod +x /opt/tomcat9/jdk1.8.0_202/jre/bin/*       
+
+    - name: daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Start tomcat service
+      ansible.builtin.service:
+        name: tomcat.service
+        state: started
