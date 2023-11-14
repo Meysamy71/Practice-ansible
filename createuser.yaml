@@ -1,0 +1,11 @@
+- name: user Add
+  hosts: all
+  become: true
+  tasks:
+    - name: Add user "tomcat"
+      user:
+        name: tomcat
+        shell: /sbin/nologin
+        create_home: no
+        comment: "tomcat nologin User"
+        state: present
