@@ -1,0 +1,45 @@
+- name: install node exporter
+  hosts: all
+  tasks:
+    - name: Add user "nodeexporter"
+      user:
+        name: nodeexporter
+        shell: /sbin/nologin
+        create_home: no
+        comment: "Node Exporter nologin User"
+        state: present
+
+    - name: Copy Node Exporter
+      ansible.builtin.copy:
+        src: /tmp/node_exporter
+        dest: /usr/local/bin/node_exporter
+        owner: nodeexporter
+        group: nodeexporter
+        mode: 744
+
+
+    - name: Creating Node Exporter Service
+      copy:
+        dest: "/etc/systemd/system/nodeexporter.service"
+        content: |
+          [Unit]
+          Description=Node Exporter
+          After=network.target
+
+          [Service]
+          User=nodeexporter
+          Group=nodeexporter
+          Type=simple
+          ExecStart=/usr/local/bin/node_exporter
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: daemon reload
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Start Node Exporter service
+      ansible.builtin.service:
+        name: nodeexporter.service
+        state: started
